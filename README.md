@@ -26,7 +26,7 @@ Purpose: Ensures ciphertext depends on every key bit. Without XOR, known-plainte
 ---------------------------------------------------------------------------------
 Two-Factor Protection
 
-Platinum SEED = SHA-256(Super-Master + Human Key)
+Platinum SEED = (Super-Master + Human Key)
 
     Factor 1: Super-Master SEED (can be stored)
 
