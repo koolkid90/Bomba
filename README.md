@@ -50,14 +50,7 @@ Where:
     M — mask bits (24 bits)
 
     Z — number of measurements
--------------------------------------------------------
-    Example for BOMBA-S (Z=5, B=2, L=1000):
-math
 
-S = 256 + 1000 \times (24 + \log_2(5) \times 2)
-S = 256 + 1000 \times (24 + 4.64)
-S = 256 + 1000 \times 28.64
-S = 256 + 28,640 = 28,896 \text{ bits}
 ---------------------------------------------------
 
 Language: JavaScript / TypeScript
