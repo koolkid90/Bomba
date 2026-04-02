@@ -2,30 +2,7 @@
 BOMBA is a next-generation cryptographic system based on the principle of floating entropy. Unlike classical ciphers (AES, ChaCha20) where entropy is fixed (256 bits), BOMBA increases entropy linearly with message length.
 -------------------------------------------------------------------------------------
 
-Mathematical Proof ( by AI )
 
-Entropy Formula:
-math
-
-S = H_{key} + L \times (M + \log_2(Z) \times B)
-
-Where:
-
-    H_{key} — Platinum SEED entropy (256 bits)
-
-    L — message length
-
-    M — mask bits (24 bits)
-
-    Z — number of measurements
--------------------------------------------------------
-    Example for BOMBA-S (Z=5, B=2, L=1000):
-math
-
-S = 256 + 1000 \times (24 + \log_2(5) \times 2)
-S = 256 + 1000 \times (24 + 4.64)
-S = 256 + 1000 \times 28.64
-S = 256 + 28,640 = 28,896 \text{ bits}
 ------------------------------------------------------
 
  Architecture
@@ -57,6 +34,32 @@ Even if one factor is compromised, the other remains secret.
 
 ======================================================================================
 
+Mathematical Proof ( by AI )
+
+Entropy Formula:
+math
+
+S = H_{key} + L \times (M + \log_2(Z) \times B)
+
+Where:
+
+    H_{key} — Platinum SEED entropy (256 bits)
+
+    L — message length
+
+    M — mask bits (24 bits)
+
+    Z — number of measurements
+-------------------------------------------------------
+    Example for BOMBA-S (Z=5, B=2, L=1000):
+math
+
+S = 256 + 1000 \times (24 + \log_2(5) \times 2)
+S = 256 + 1000 \times (24 + 4.64)
+S = 256 + 1000 \times 28.64
+S = 256 + 28,640 = 28,896 \text{ bits}
+---------------------------------------------------
+
 Language: JavaScript / TypeScript
 
 Platforms: Browser, Node.js, React Native
@@ -66,6 +69,22 @@ License: MIT (Open Source)
 Repository: github.com/koolkid90/bomba
 --------------------------------------------------------------------------------------
 
+P. S. (Post Scriptum)
+
+Hello! The original idea of this cipher is mine, but I wrote it using vibe coding (coding with AI assistance). I've been studying cryptography for less than six months, but as far as I can tell — the encryption works.
+
+I will be glad to receive tests and attacks on it, as well as modifications and improvements from the community.
+
+This is an open invitation:
+
+    Try to break it
+
+    Suggest improvements
+
+    Port it to other languages (Rust, C, Go, Python)
+
+    Submit pull requests
+------------------------------------------------------------------------------
 Author: Pavel Bobkin  
 Github: koolkid90
 
