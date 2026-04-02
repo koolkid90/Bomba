@@ -1,17 +1,5 @@
 # Bomba
 BOMBA is a next-generation cryptographic system based on the principle of floating entropy. Unlike classical ciphers (AES, ChaCha20) where entropy is fixed (256 bits), BOMBA increases entropy linearly with message length.
-
-S = H(key) + L × 38.1 bits
-
-Where:
-
-    S — total entropy
-
-    H(key) — master key entropy (256+ bits)
-
-    L — message length in characters
-
-Example: for a 1000-character message, entropy reaches ~38,000 bits, which is 150 times higher than AES-256
 -------------------------------------------------------------------------------------
 
  Architecture
