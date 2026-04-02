@@ -2,6 +2,32 @@
 BOMBA is a next-generation cryptographic system based on the principle of floating entropy. Unlike classical ciphers (AES, ChaCha20) where entropy is fixed (256 bits), BOMBA increases entropy linearly with message length.
 -------------------------------------------------------------------------------------
 
+Mathematical Proof ( by AI )
+
+Entropy Formula:
+math
+
+S = H_{key} + L \times (M + \log_2(Z) \times B)
+
+Where:
+
+    H_{key} — Platinum SEED entropy (256 bits)
+
+    L — message length
+
+    M — mask bits (24 bits)
+
+    Z — number of measurements
+-------------------------------------------------------
+    Example for BOMBA-S (Z=5, B=2, L=1000):
+math
+
+S = 256 + 1000 \times (24 + \log_2(5) \times 2)
+S = 256 + 1000 \times (24 + 4.64)
+S = 256 + 1000 \times 28.64
+S = 256 + 28,640 = 28,896 \text{ bits}
+------------------------------------------------------
+
  Architecture
 
 The system is built on four levels:
