@@ -17,12 +17,7 @@ Core Transformations
 
 XOR Transformation
 
-const mask = (platinumSeed + position) & 0xFFFFFF;
-const xored = plainByte ^ mask;
-
 Purpose: Ensures ciphertext depends on every key bit. Without XOR, known-plaintext attacks would be trivial.
-
-
 ---------------------------------------------------------------------------------
 Two-Factor Protection
 
