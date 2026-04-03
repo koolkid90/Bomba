@@ -13,8 +13,17 @@ Key Properties
 ✅ Reversible — Configurations can be exactly restored from the SEED
 ✅ Scalable — Can pack any number of configurations into a fixed-size SEED
 ✅ Portable — 32-bit SEED is easy to store, transmit, or memorize
-Why This Matters
+Why This MattersIn traditional cryptography, you store:
 
+    Keys (256 bits)
+
+    Configurations (1,280+ bits)
+
+    Parameters (variable)
+
+With BOMBA compression, you store just one 32-bit SEED — and everything else is generated deterministically from it.
+
+This is not compression. This is mathematical transformation of state space. 🔐
 ------------------------------------------------------------
 
 
