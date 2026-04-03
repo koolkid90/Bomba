@@ -5,6 +5,18 @@ You can plug your own generator, your own alphabet set, and your own number of m
 
 ------------------------------------------------------
 
+Bomba-Compression
+
+Key Properties
+
+✅ Deterministic — Same SEED always produces the same configurations
+✅ Reversible — Configurations can be exactly restored from the SEED
+✅ Scalable — Can pack any number of configurations into a fixed-size SEED
+✅ Portable — 32-bit SEED is easy to store, transmit, or memorize
+Why This Matters
+
+------------------------------------------------------------
+
 
  Architecture
 
