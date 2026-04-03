@@ -18,9 +18,12 @@ Key advantage: Due to Z measurements, each byte can be represented by one of Z d
 ---------------------------------------------------------------------------------
 Core Transformations
 
-XOR Transformation
+XOR Transformation + Affine Transformation
 
-Purpose: Ensures ciphertext depends on every key bit. Without XOR, known-plaintext attacks would be trivial.
+Purpose: Ensures ciphertext depends on every key bit. Without XOR, known-plaintext attacks would be trivial. Affine Transmorfamtion for
+obsfucation
+
+
 ---------------------------------------------------------------------------------
 Two-Factor Protection
 
