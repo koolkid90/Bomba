@@ -3,6 +3,14 @@ BOMBA is a cryptographic system based on the principle of floating entropy. Unli
 -------------------------------------------------------------------------------------
 You can plug your own generator, your own alphabet set, and your own number of measurements into BOMBA — in a sense, it's a **cryptographic constructor**. This demonstration used an LCG and omitted hmac, which reduces the actual cryptographic strength
 ---------------------------------------------------------------------
+## Run via HTTPS Protocol
+
+**Always run BOMBA over HTTPS.**
+
+- The cipher uses `crypto.subtle` API (SHA-256, HMAC, etc.)
+- These features are **only available in secure contexts** (HTTPS or localhost)
+- Running over HTTP will cause runtime errors
+---------------------------------------------------------------------------------
 # BOMBA · Modification Policy
 
 **When modifying the cipher, please preserve the original name at the beginning.** ( Like Bomba-X or Bomba-Treasure ). 
