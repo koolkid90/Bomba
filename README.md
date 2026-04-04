@@ -5,7 +5,7 @@ You can plug your own generator, your own alphabet set, and your own number of m
 ---------------------------------------------------------------------
 # BOMBA · Modification Policy
 
-**When modifying the cipher, please preserve the original name at the beginning.** ( Like Bomba-X or Bomba-Treasure )
+**When modifying the cipher, please preserve the original name at the beginning.** ( Like Bomba-X or Bomba-Treasure ). Because it just cool :)
 
 ------------------------------------------------------
 
