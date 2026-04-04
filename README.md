@@ -2,6 +2,10 @@
 BOMBA is a cryptographic system based on the principle of floating entropy. Unlike classical ciphers (AES, ChaCha20) where entropy is fixed (256 bits), BOMBA increases entropy linearly with message length.
 -------------------------------------------------------------------------------------
 You can plug your own generator, your own alphabet set, and your own number of measurements into BOMBA — in a sense, it's a **cryptographic constructor**. This demonstration used an LCG and omitted hmac, which reduces the actual cryptographic strength
+---------------------------------------------------------------------
+# BOMBA · Modification Policy
+
+**When modifying the cipher, please preserve the original name at the beginning.** ( Like Bomba-X or Bomba-Treasure )
 
 ------------------------------------------------------
 
