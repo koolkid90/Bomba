@@ -6,6 +6,7 @@ You can plug your own generator, your own alphabet set, and your own number of m
 Modifications:
 
 BOMBA-SH - version with HMAC and CSPRNG ( SHA-256 ) ( bomba-csprng-hmac.html )
+Z-BOMBA - floating Z measures, choose your Z ( z-bomba.html )
 
 --------------------------------------------------------------------
 
