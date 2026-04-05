@@ -9,6 +9,8 @@ BOMBA-SH - version with HMAC and CSPRNG ( SHA-256 ) ( bomba-csprng-hmac.html )
 
 Z-BOMBA - floating Z measures, choose your Z ( z-bomba.html )
 
+S-BOMBA - maximum speed, minimum parameters ( s-bomba.html )
+
 --------------------------------------------------------------------
 
  BOMBA — The Punk Cipher (just kidding... or not?)
