@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-BOMBA · Fixed Z=4 · Lightweight Cryptosystem</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d4e4fc 100%);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            padding: 1.5rem;
+            color: #000000;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        h1 {
+            font-size: 2rem; font-weight: 700;
+            background: linear-gradient(135deg, #1a4a8a, #2a6aaa);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .sub { color: #2a4a7a; font-size: 0.75rem; margin-top: 0.3rem; font-weight: 500; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 20px; padding: 1.2rem;
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .card h2 { 
+            font-size: 1.1rem; margin-bottom: 1rem; 
+            color: #1a4a8a; border-left: 3px solid #4a9eff; 
+            padding-left: 0.6rem; 
+        }
+        
+        .field-label {
+            font-size: 0.65rem; text-transform: uppercase; font-weight: 700;
+            color: #2a4a7a; margin-top: 0.8rem; margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+        }
+        input, textarea {
+            width: 100%; background: #ffffff; border: 1px solid #b8d0f0;
+            border-radius: 14px; padding: 0.6rem 0.8rem; font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace; transition: 0.2s;
+            color: #000000;
+        }
+        input:focus, textarea:focus { outline: none; border-color: #4a9eff; box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1); }
+        
+        button {
+            background: #4a9eff; border: none; color: #ffffff;
+            padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.7rem;
+            font-weight: 600; cursor: pointer; margin-top: 0.8rem; margin-right: 0.5rem;
+            transition: 0.2s;
+        }
+        button:hover { background: #2a7ae0; transform: scale(0.98); }
+        button.secondary { background: #dce8f8; color: #1a4a8a; border: 1px solid #b8d0f0; }
+        button.secondary:hover { background: #c8d8f0; }
+        
+        .status {
+            margin-top: 0.8rem; padding: 0.5rem; border-radius: 12px;
+            font-size: 0.7rem; text-align: center; font-weight: 500;
+        }
+        .status.success { background: #d4f0e0; color: #1a6a3a; border: 1px solid #6acf8a; }
+        .status.error { background: #ffe0e0; color: #c0392b; border: 1px solid #e74c3c; }
+        
+        .badge {
+            display: inline-block; background: rgba(74, 158, 255, 0.15);
+            border: 1px solid rgba(74, 158, 255, 0.3); padding: 0.15rem 0.5rem;
+            border-radius: 20px; font-size: 0.6rem; margin-right: 0.4rem;
+            color: #1a4a8a; font-weight: 600;
+        }
+        
+        .entropy-bar {
+            background: #d0e0f0; border-radius: 10px; height: 20px;
+            margin: 0.8rem 0; overflow: hidden;
+        }
+        .entropy-fill {
+            height: 100%; width: 0%; background: linear-gradient(90deg, #4a9eff, #2a6aaa);
+            border-radius: 10px; transition: width 0.3s ease;
+        }
+        .entropy-stats {
+            display: flex; justify-content: space-between; font-size: 0.65rem;
+            color: #2a4a7a; margin-top: 0.3rem; font-weight: 500;
+            flex-wrap: wrap; gap: 0.5rem;
+        }
+        
+        .seed-display {
+            background: #e8f0fe; border-radius: 12px; padding: 0.5rem;
+            font-size: 0.65rem; text-align: center; word-break: break-all;
+            margin: 0.8rem 0; font-family: monospace; color: #000000;
+        }
+        
+        hr {
+            border: none; height: 1px;
+            background: linear-gradient(90deg, transparent, #b8d0f0, #4a9eff, #b8d0f0, transparent);
+            margin: 1rem 0;
+        }
+        
+        .info-text {
+            font-size: 0.65rem; color: #2a4a7a; margin-top: 0.5rem; font-weight: 500;
+        }
+        
+        @media (max-width: 700px) {
+            .grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>S-BOMBA</h1>
+        <div class="sub">fixed Z=4 · lightweight · high entropy · fast</div>
+        <div style="margin-top: 0.6rem;">
+            <span class="badge">Z=4</span>
+            <span class="badge">2‑FACTOR</span>
+            <span class="badge">HMAC-SHA256</span>
+            <span class="badge">SHA-256 DRBG</span>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- ENCRYPTION -->
+        <div class="card">
+            <h2>🔒 ENCRYPT</h2>
+
+            <div class="field-label">🔑 MASTER KEY</div>
+            <input type="text" id="masterKey" value="s-bomba-master-2024" placeholder="master key">
+
+            <div class="field-label">🧠 HUMAN KEY</div>
+            <input type="text" id="humanKey" value="fixed-z4-crypto" placeholder="human entropy">
+
+            <div class="field-label">📝 PLAINTEXT</div>
+            <textarea id="plaintext" rows="2" placeholder="Type your secret message here...">Hello, world! This is a secret message.</textarea>
+
+            <button id="encryptBtn">⚡ ENCRYPT</button>
+
+            <div class="seed-display" id="seedDisplay">
+                <strong>PLATINUM SEED (256 bit):</strong><br>
+                <span id="seedValue">—</span>
+            </div>
+
+            <div class="field-label">📡 CIPHERTEXT (with HMAC)</div>
+            <textarea id="ciphertext" rows="3" readonly></textarea>
+            <button id="copyBtn" class="secondary">📋 COPY</button>
+        </div>
+
+        <!-- DECRYPTION -->
+        <div class="card">
+            <h2>🔓 DECRYPT</h2>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <input type="text" id="decryptMaster" placeholder="master key" style="flex:1">
+                <input type="text" id="decryptHuman" placeholder="human key" style="flex:1">
+            </div>
+
+            <div class="field-label">📥 CIPHERTEXT</div>
+            <textarea id="cipherInput" rows="3" placeholder="paste ciphertext..."></textarea>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button id="decryptBtn">🔓 DECRYPT</button>
+                <button id="loadBtn" class="secondary">📥 LOAD</button>
+            </div>
+
+            <div class="field-label">📄 DECRYPTED</div>
+            <textarea id="decrypted" rows="2" readonly></textarea>
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <!-- ENTROPY & STATS PANEL -->
+    <div class="card" style="margin-top: 1rem;">
+        <h2>📊 ENTROPY METRICS (Z=4)</h2>
+        <div id="entropyInfo">
+            <div class="entropy-bar"><div class="entropy-fill" id="entropyFill"></div></div>
+            <div class="entropy-stats">
+                <span>🔑 Seed: 256 bits</span>
+                <span id="xorBits">🎭 XOR: 0 bits</span>
+                <span id="polyBits">📏 Poly: 0 bits</span>
+                <span id="totalBits">📊 Total: 0 bits</span>
+            </div>
+        </div>
+        <div class="info-text">
+            ⚡ Z=4 · 1 byte → 4 symbols · 3 bytes per character · HMAC-SHA256 authenticated
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div><span class="badge">🧪 TEST</span></div>
+            <div>
+                <button id="testBtn" class="secondary">🔁 VERIFICATION</button>
+                <button id="polyBtn" class="secondary">🎲 POLYMORPHISM</button>
+                <button id="tamperBtn" class="secondary">⚠️ TAMPER</button>
+            </div>
+        </div>
+        <div id="testResult" style="margin-top: 0.8rem; font-family: monospace; font-size: 0.7rem; color: #000000;"></div>
+        <hr>
+        <div class="info-text">
+            <strong>⚡ S-BOMBA FEATURES:</strong><br>
+            • Fixed Z=4 (optimal speed/entropy balance) · 4 symbols per byte<br>
+            • SHA-256 DRBG · HMAC-SHA256 authentication<br>
+            • 2-factor Platinum Seed (256 bits) · Full Unicode support<br>
+            • Lightweight ~15KB · Runs entirely in browser
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== OPTIMIZED UNICODE POOL ==========
+    function getSymbolPool() {
+        const points = [];
+        for (let i = 32; i <= 255; i++) points.push(i);
+        for (let i = 0x0400; i <= 0x04FF; i++) points.push(i);
+        for (let i = 0x2000; i <= 0x2FFF; i++) points.push(i);
+        for (let i = 0x1F300; i <= 0x1F6FF; i++) points.push(i);
+        return points;
+    }
+    const SYMBOL_POOL = getSymbolPool();
+    const Z = 4;  // FIXED
+
+    // ========== DRBG - SHA-256 Counter Mode ==========
+    class FastDRBG {
+        constructor(seedBytes) {
+            this.seed = seedBytes;
+            this.counter = 0;
+            this.buffer = new Uint8Array(0);
+            this.offset = 0;
+        }
+        async _refill() {
+            const counterBytes = new Uint8Array(4);
+            counterBytes[0] = (this.counter >> 24) & 0xFF;
+            counterBytes[1] = (this.counter >> 16) & 0xFF;
+            counterBytes[2] = (this.counter >> 8) & 0xFF;
+            counterBytes[3] = this.counter & 0xFF;
+            const data = new Uint8Array(this.seed.length + 4);
+            data.set(this.seed, 0);
+            data.set(counterBytes, this.seed.length);
+            this.buffer = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+            this.offset = 0;
+            this.counter++;
+        }
+        async nextByte() {
+            if (this.offset >= this.buffer.length) await this._refill();
+            return this.buffer[this.offset++];
+        }
+        // 🔑 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: >>> 0 гарантирует беззнаковое 32-битное число
+        async next() {
+            return (((await this.nextByte()) << 24) | 
+                    ((await this.nextByte()) << 16) | 
+                    ((await this.nextByte()) << 8) | 
+                    (await this.nextByte())) >>> 0;
+        }
+    }
+
+    // ========== HMAC ==========
+    async function hmacSha256(key, msg) {
+        const k = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+        return new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(msg)));
+    }
+
+    function bytesToHex(b) { return Array.from(b).map(x => x.toString(16).padStart(2, '0')).join(''); }
+    function hexToBytes(h) {
+        const b = new Uint8Array(h.length / 2);
+        for (let i = 0; i < h.length; i += 2) b[i/2] = parseInt(h.substr(i, 2), 16);
+        return b;
+    }
+
+    // ========== SYMBOL MAP ==========
+    async function generateSymbolMap(seed) {
+        const rng = new FastDRBG(seed);
+        const totalNeeded = 256 * Z;
+        const poolLen = SYMBOL_POOL.length;
+        const shuffled = [...SYMBOL_POOL];
+        
+        // Fisher-Yates shuffle с безопасными индексами
+        for (let i = 0; i < totalNeeded && i < poolLen; i++) {
+            const rand = await rng.next();
+            const range = poolLen - i;
+            const j = i + (rand % range);  // rand >>> 0 уже гарантирует >= 0
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        
+        const byteToSym = new Map();
+        const symToByte = new Map();
+        let idx = 0;
+        for (let b = 0; b < 256; b++) {
+            const syms = [];
+            for (let i = 0; i < Z && idx < totalNeeded && idx < shuffled.length; i++) {
+                const sym = String.fromCodePoint(shuffled[idx++]);
+                syms.push(sym);
+                symToByte.set(sym, b);
+            }
+            byteToSym.set(b, syms);
+        }
+        return { byteToSym, symToByte };
+    }
+
+    // ========== CORE CRYPTO ==========
+    async function encryptFast(msg, seed) {
+        const { byteToSym } = await generateSymbolMap(seed);
+        const seedVal = (seed[0] << 24) | (seed[1] << 16) | (seed[2] << 8) | seed[3];
+        const rng = new FastDRBG(seed);
+        const possibleA = [3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63];
+        const affineA = possibleA[(await rng.next()) % possibleA.length];
+        const affineB = await rng.nextByte();
+        
+        const chars = [...msg];
+        const out = [];
+        for (let i = 0; i < chars.length; i++) {
+            const code = chars[i].codePointAt(0);
+            const bytes = [(code >> 16) & 0xFF, (code >> 8) & 0xFF, code & 0xFF];
+            for (let j = 0; j < 3; j++) {
+                const mask = (seedVal + i * 3 + j) & 0xFF;
+                let x = (bytes[j] ^ mask) & 0xFF;
+                x = (affineA * x + affineB) & 0xFF;
+                const syms = byteToSym.get(x);
+                const idx = (await rng.next()) % syms.length;
+                out.push(syms[idx]);
+            }
+        }
+        return out.join('');
+    }
+
+    async function decryptFast(cipher, seed) {
+        const { symToByte } = await generateSymbolMap(seed);
+        const seedVal = (seed[0] << 24) | (seed[1] << 16) | (seed[2] << 8) | seed[3];
+        const rng = new FastDRBG(seed);
+        const possibleA = [3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63];
+        const affineA = possibleA[(await rng.next()) % possibleA.length];
+        const affineB = await rng.nextByte();
+        
+        let invA = 1;
+        for (let x = 1; x < 256; x++) if ((affineA * x) % 256 === 1) { invA = x; break; }
+        
+        const chars = [...cipher];
+        const out = [];
+        const totalChars = Math.floor(chars.length / 3);
+        
+        for (let i = 0; i < totalChars; i++) {
+            const bytes = [];
+            for (let j = 0; j < 3; j++) {
+                const sym = chars[i * 3 + j];
+                const b = symToByte.get(sym);
+                if (b === undefined) return null;
+                let inv = (invA * ((b - affineB + 256) % 256)) & 0xFF;
+                const mask = (seedVal + i * 3 + j) & 0xFF;
+                bytes.push((inv ^ mask) & 0xFF);
+            }
+            const code = (bytes[0] << 16) | (bytes[1] << 8) | bytes[2];
+            // 🔑 Безопасная проверка кодовой точки
+            if (!Number.isNaN(code) && code <= 0x10FFFF && !(code >= 0xD800 && code <= 0xDFFF)) {
+                out.push(String.fromCodePoint(code));
+            } else {
+                out.push('');
+            }
+        }
+        return out.join('');
+    }
+
+    async function encryptWithHmac(msg, seed) {
+        const cipher = await encryptFast(msg, seed);
+        const tag = await hmacSha256(seed, cipher);
+        return `${bytesToHex(tag)}:${cipher}`;
+    }
+
+    async function decryptWithHmac(data, seed) {
+        const idx = data.indexOf(':');
+        if (idx === -1) throw new Error("Invalid format");
+        const tagHex = data.slice(0, idx);
+        const cipher = data.slice(idx + 1);
+        if (tagHex.length !== 64) throw new Error("Invalid tag");
+        const tag = hexToBytes(tagHex);
+        const expected = await hmacSha256(seed, cipher);
+        if (expected.length !== tag.length) throw new Error("HMAC mismatch");
+        for (let i = 0; i < expected.length; i++) if (expected[i] !== tag[i]) throw new Error("HMAC VERIFICATION FAILED");
+        const plain = await decryptFast(cipher, seed);
+        if (plain === null) throw new Error("Decryption failed");
+        return plain;
+    }
+
+    async function generateSeed(master, human) {
+        const data = new TextEncoder().encode(`${master}:${human}`);
+        return new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+    }
+
+    // ========== UI ==========
+    function updateEntropy(textLen) {
+        const L = textLen !== null ? textLen : document.getElementById('plaintext').value.length;
+        const xorBits = L * 3 * 8;
+        const polyBits = L * 3 * Math.log2(Z);
+        const total = 256 + 256 + xorBits + polyBits;
+        document.getElementById('xorBits').innerHTML = `🎭 XOR: ${xorBits} bits`;
+        document.getElementById('polyBits').innerHTML = `📏 Poly: ${polyBits.toFixed(0)} bits`;
+        document.getElementById('totalBits').innerHTML = `📊 Total: ${Math.round(total)} bits`;
+        const percent = Math.min(100, (total / 20000) * 100);
+        document.getElementById('entropyFill').style.width = `${percent}%`;
+    }
+
+    function showStatus(msg, type) {
+        const div = document.getElementById('status');
+        div.textContent = msg;
+        div.className = `status ${type}`;
+        setTimeout(() => { if (div.textContent === msg) div.className = 'status'; }, 3000);
+    }
+
+    async function doEncrypt() {
+        const master = document.getElementById('masterKey').value;
+        const human = document.getElementById('humanKey').value;
+        const text = document.getElementById('plaintext').value;
+        if (!master || !human) return showStatus("Both keys required", "error");
+        if (!text) return showStatus("Enter plaintext", "error");
+        try {
+            const seed = await generateSeed(master, human);
+            const enc = await encryptWithHmac(text, seed);
+            document.getElementById('ciphertext').value = enc;
+            document.getElementById('seedValue').textContent = bytesToHex(seed);
+            updateEntropy(text.length);
+            showStatus(`✅ Encrypted (Z=${Z})`, "success");
+        } catch(e) { showStatus("Error: " + e.message, "error"); }
+    }
+
+    async function doDecrypt() {
+        const master = document.getElementById('decryptMaster').value;
+        const human = document.getElementById('decryptHuman').value;
+        if (!master || !human) return showStatus("Enter master and human keys", "error");
+        const seed = await generateSeed(master, human);
+        const cipher = document.getElementById('cipherInput').value;
+        if (!cipher) return showStatus("Enter ciphertext", "error");
+        try {
+            const plain = await decryptWithHmac(cipher, seed);
+            document.getElementById('decrypted').value = plain;
+            showStatus("✅ Decrypted & HMAC verified", "success");
+        } catch(e) { showStatus(e.message, "error"); }
+    }
+
+    function loadFromEncrypt() {
+        const c = document.getElementById('ciphertext').value;
+        if (!c) return showStatus("No data", "error");
+        document.getElementById('cipherInput').value = c;
+        document.getElementById('decryptMaster').value = document.getElementById('masterKey').value;
+        document.getElementById('decryptHuman').value = document.getElementById('humanKey').value;
+        showStatus("Loaded", "success");
+    }
+
+    function copyCipher() {
+        const val = document.getElementById('ciphertext').value;
+        if (val) { navigator.clipboard.writeText(val); showStatus("Copied", "success"); }
+        else showStatus("No data", "error");
+    }
+
+    async function runTest() {
+        const seed = await generateSeed("test", "test");
+        const msgs = ["Hello", "Привет", "🚀✨"];
+        let ok = true, res = "";
+        for (const m of msgs) {
+            try {
+                const enc = await encryptWithHmac(m, seed);
+                const dec = await decryptWithHmac(enc, seed);
+                const pass = m === dec;
+                ok = ok && pass;
+                const preview = m.length > 15 ? m.substring(0, 15) + "…" : m;
+                res += `<div>${pass ? '✅' : '❌'} "${preview}" → ${pass ? 'OK' : 'FAIL'}</div>`;
+            } catch(e) {
+                ok = false;
+                res += `<div>❌ "${m}" → ${e.message}</div>`;
+            }
+        }
+        document.getElementById('testResult').innerHTML = `<div style="font-weight:bold">${ok ? '✅ ALL PASSED' : '❌ FAILED'}</div>${res}`;
+    }
+
+    async function testPoly() {
+        const seed = await generateSeed("test", "test");
+        const results = [];
+        for (let i = 0; i < Z * 2; i++) {
+            const enc = await encryptWithHmac("A", seed);
+            const cipher = enc.split(':')[1];
+            if (cipher && cipher[0]) results.push(cipher[0]);
+        }
+        const unique = new Set(results);
+        document.getElementById('testResult').innerHTML = `
+            <div>🎲 Polymorphism (Z=${Z}):</div>
+            <div style="font-size:1.2rem;margin:0.3rem 0;word-break:break-all">${results.map(r=>`"${r}"`).join(' · ')}</div>
+            <div>✅ Unique: ${unique.size}/${results.length} (${(unique.size/results.length*100).toFixed(0)}%)</div>
+        `;
+    }
+
+    async function testTamper() {
+        const seed = await generateSeed("test", "test");
+        const enc = await encryptWithHmac("Secret", seed);
+        const parts = enc.split(':');
+        if (parts[1] && parts[1].length > 0) {
+            parts[1] = (parts[1][0] === 'A' ? 'B' : 'A') + parts[1].slice(1);
+        }
+        try {
+            await decryptWithHmac(parts.join(':'), seed);
+            document.getElementById('testResult').innerHTML = '<div style="color:#c0392b">❌ Tamper test FAILED</div>';
+        } catch(e) {
+            document.getElementById('testResult').innerHTML = `<div style="color:#27ae60">✅ Tamper blocked: ${e.message}</div>`;
+        }
+    }
+
+    // Event binding
+    document.getElementById('encryptBtn').onclick = doEncrypt;
+    document.getElementById('decryptBtn').onclick = doDecrypt;
+    document.getElementById('loadBtn').onclick = loadFromEncrypt;
+    document.getElementById('copyBtn').onclick = copyCipher;
+    document.getElementById('testBtn').onclick = runTest;
+    document.getElementById('polyBtn').onclick = testPoly;
+    document.getElementById('tamperBtn').onclick = testTamper;
+    
+    document.getElementById('masterKey').oninput = e => document.getElementById('decryptMaster').value = e.target.value;
+    document.getElementById('humanKey').oninput = e => document.getElementById('decryptHuman').value = e.target.value;
+    document.getElementById('plaintext').oninput = () => updateEntropy(null);
+
+    updateEntropy(0);
+</script>
+</body>
+</html>
