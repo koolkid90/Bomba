@@ -3,6 +3,12 @@ BOMBA is a cryptographic system based on the principle of floating entropy. Unli
 -------------------------------------------------------------------------------------
 You can plug your own generator, your own alphabet set, and your own number of measurements into BOMBA — in a sense, it's a **cryptographic constructor**. This demonstration used an LCG and omitted hmac, which reduces the actual cryptographic strength
 
+Modifications:
+
+BOMBA-SH - version with HMAC and CSPRNG ( SHA-256 ) ( bomba-csprng-hmac.html )
+
+--------------------------------------------------------------------
+
  BOMBA — The Punk Cipher (just kidding... or not?)
 
 **BOMBA is pure DIY crypto**
