@@ -45,11 +45,11 @@ Key Properties
 
 Why This MattersIn traditional cryptography, you store:
 
-    Keys (256 bits)
+Keys (256 bits)
 
-    Configurations (1,280+ bits)
+Configurations (1,280+ bits)
 
-    Parameters (variable)
+Parameters (variable)
 
 With BOMBA compression, you store just one 32-bit SEED — and everything else is generated deterministically from it.
 
